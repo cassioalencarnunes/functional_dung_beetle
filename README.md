@@ -1,6 +1,6 @@
 # Functional redundancy of Amazonian dung beetles confers community-level resistance to primary forest disturbance
 
-Cássio Alencar Nunes, Jos Barlow, Filipe França, Erika Berenguer, Ricardo R. C. Solar, Julio Louzada, Rafael Leitão, Laís Maia, Victor H. F. Oliveira, Rodrigo Fagundes Braga, Fernando Z. Vaz-de-Mello, Emma J. Sayer"
+Cássio Alencar Nunes, Jos Barlow, Filipe França, Erika Berenguer, Ricardo R. C. Solar, Julio Louzada, Rafael Leitão, Laís Maia, Victor H. F. Oliveira, Rodrigo Fagundes Braga, Fernando Z. Vaz-de-Mello, Emma J. Sayer
 
 April 2021
 
