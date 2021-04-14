@@ -1,7 +1,9 @@
 ---
 title: "Rarity Index"
 author: "Nunes et al"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
