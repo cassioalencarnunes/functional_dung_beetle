@@ -1,0 +1,68 @@
+---
+title: "Rarity Index"
+author: "Nunes et al"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Script to calculate the rarity index
+
+To define species rarity we combined estimates of local abundance (LA), geographical range (GR), and habitat breadth (HB) of each species. The rarity index for a species i (RI$_i$) is calculated by the following formula:
+
+$$RI_i = \frac{\left[ \left( {LA_i \times w_{la}}\right) + \left( {GR_i \times w_{gr}}\right) + \left( {HB_i \times w_{hb}}\right) \right]}{\left( w_{la} + w_{gr} + w_{hb} \right)}$$
+
+where $w_{la}$, $w_{gr}$ and $w_{hb}$ are the weighting parameters for local abundance, geographical range and habitat breadth, respectively. The weighing parameter for each metric $_x$ was calculated by the following formula:
+
+$$w_x = \frac{1}{2} + \left[ \left( \frac{1 - |r_{x1}|}{2} \right) + \left( \frac{1 - |r_{x2}|}{2} \right) \right] $$
+
+where $r_{x1}$ and $r_{x2}$ are the Pearson’s correlation coefficients between the given metric x and each of the other two metrics.
+
+
+We obtained LA, GR and HB for each dung beetle species and construct an object with these three parameters. We first log-transformed each metric and then standardized the data by dividing each value by the maximum value across all species
+
+```{r}
+rarity <- read.csv("rarity_parameters.csv", h=T)
+
+parameters <- rarity[,3:5]
+transformed <- log(parameters+1)
+names(transformed) <- c("LogLA", "LogGR", "LogHB")
+scaled.GR <- transformed$LogGR/max(transformed$LogGR)
+scaled.HB <- transformed$LogHB/max(transformed$LogHB)
+scaled.LA <- transformed$LogLA/max(transformed$LogLA)
+scaled <- data.frame(rarity$sp, scaled.GR, scaled.HB, scaled.LA)
+```
+
+To obtain weighting parameters, first we ran Pearson's correlations to get $r_x$ values:
+
+```{r}
+#Correlations between variables
+
+library(stats)
+
+correlations <- cor(scaled[2:4], method="pearson")
+
+rlahb <- correlations[2,3]
+rlagr <- correlations[1,3]
+rgrla <- correlations[3,1]
+rgrhb <- correlations[2,1]
+rhbla <- correlations[3,2]
+rhbgr <- correlations[1,2]
+```
+
+And then used the $r_x$ values to calculate the $w$ factors:
+
+```{r}
+Wla <- 1/2+(((1-rlagr)/2)+((1-rlahb)/2))
+Wgr <- 1/2+(((1-rgrla)/2)+((1-rgrhb)/2))
+Whb <- 1/2+(((1-rhbgr)/2)+((1-rhbla)/2))
+```
+
+Finally, we calculated the Rarity Index for each species:
+
+```{r}
+RI <- ((scaled$scaled.LA*Wla)+(scaled$scaled.GR*Wgr)+(scaled$scaled.HB*Whb))/(Wla+Wgr+Whb)
+RI <- data.frame(rarity$sp, RI)
+```
